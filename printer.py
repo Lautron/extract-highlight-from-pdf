@@ -28,8 +28,8 @@ class Highlight:
         self._set_hex_color_from_rgb(color)
 
     def _set_hex_color_from_rgb(self, color: tuple[float, float, float]) -> None:
-        rgb_hex_values: list = [HexStringFromPercentage(percentage) for percentage in color]
-        self.color: str = '#' + "".join([str(hex_code) for hex_code in rgb_hex_values])
+        rgb_hex_values: list = [str(HexStringFromPercentage(percentage)) for percentage in color]
+        self.color: str = '#' + "".join(rgb_hex_values)
 
 class HighlightFormatter:
     template_by_color: dict[str, str] = Config.string_template_by_color
