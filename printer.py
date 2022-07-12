@@ -1,3 +1,4 @@
+from config import Config
 
 class Highlight:
     def __init__(self, color, text):
@@ -31,11 +32,8 @@ class HexStringFromPercentage:
         return self.hex_code
 
 class Printer:
-    template_by_color = {
-            '#55aaff': "# {}",
-            '#ffff01': "## {}",
-            '#ffff02': "### {}",
-    }
+    template_by_color = Config.string_template_by_color
+
     def __init__(self, highlight):
         self.color = highlight.color
         self.text = highlight.text
