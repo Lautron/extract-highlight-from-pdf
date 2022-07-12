@@ -21,8 +21,8 @@ def test_Highlight():
 
 def _printer(color, text, expected_result):
     highlight = Highlight(color, text)
-    printer = Printer(highlight)
-    assert printer.get_formatted_text() == expected_result
+    printer = HighlightFormatter(highlight)
+    assert printer.format() == expected_result
 
 def test_Printer():
     text = 'test'
