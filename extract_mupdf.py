@@ -58,8 +58,14 @@ def parse_highlight_from_pdf(filepath: str) -> List:
 
     return highlights
 
+def format_highlights(highlights: list[Highlight]) -> list[str]:
+    return [str(HighlightFormatter(highlight)) for highlight in highlights]
+
+def format_output_text(highlights: list[Highlight]) -> str:
+    formatted_highlights = format_highlights(highlights)
+    return "\n".join(formatted_highlights)
 
 if __name__ == "__main__":
-    #parse_highlight_from_pdf("Clean Code - A Handbook of Agile Software Craftsmanship.pdf")
-    print(parse_highlight_from_pdf("Clean Code - A Handbook of Agile Software Craftsmanship.pdf"))
+    #format_output_text(parse_highlight_from_pdf("test_pdf.pdf"))
+    print(format_output_text(parse_highlight_from_pdf("test_pdf.pdf")))
     #print('\n\n'.join(parse_highlight_from_pdf("Clean Code - A Handbook of Agile Software Craftsmanship.pdf")))
