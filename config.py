@@ -1,8 +1,9 @@
 class Config:
     string_template_by_color = {
-        '#55aaff': "# {}",
-        '#ffff01': "## {}",
-        '#ffff02': "### {}",
+        '#ffaaff': "\n# {}",
+        '#55ffff': "\n## {}",
+        '#00ff00': "\n### {}",
+        '#55aaff': "\n#### {}",
     }
 
 
