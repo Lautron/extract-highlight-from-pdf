@@ -31,6 +31,9 @@ class Highlight:
         rgb_hex_values: list = [str(HexStringFromPercentage(percentage)) for percentage in color]
         self.color: str = '#' + "".join(rgb_hex_values)
 
+    def __repr__(self):
+        return f"Highlight(color='{self.color}', text='{self.text}')"
+
 class HighlightFormatter:
     template_by_color: dict[str, str] = Config.string_template_by_color
 
@@ -41,4 +44,7 @@ class HighlightFormatter:
     def format(self) -> str:
         template = self.template_by_color.get(self.color, '{}')
         return template.format(self.text)
+
+    def __str__(self):
+        return self.format()
 
