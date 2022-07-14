@@ -8,12 +8,17 @@ import fitz  # install with 'pip install pymupdf'
 def parse_text_from_annotation(annot: fitz.Annot, wordlist: List[Tuple[float, float, float, float, str, int, int, int]]) -> str:
     points = annot.vertices
     quad_count = int(len(points) / 4)
+    MIN_INTERSECTION_HEIGHT = 1.5
+    words = []
     sentences = []
+    valid_intersection_height = lambda r1, r2: (abs(r1.y1 - r2.y0) > MIN_INTERSECTION_HEIGHT)
+    is_word_highlighted = lambda r1, r2: r1.intersects(r2) and valid_intersection_height(r1, r2)
     for i in range(quad_count):
         # where the highlighted part is
         r = fitz.Quad(points[i * 4 : i * 4 + 4]).rect
 
-        words = [w for w in wordlist if fitz.Rect(w[:4]).intersects(r)]
+        words = [w for w in wordlist if is_word_highlighted(r, fitz.Rect(w[:4]))]
+
         sentences.append(" ".join(w[4] for w in words))
     sentence = " ".join(sentences)
     return sentence
