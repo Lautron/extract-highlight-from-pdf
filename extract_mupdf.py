@@ -23,21 +23,30 @@ def parse_text_from_annotation(annot: fitz.Annot, wordlist: List[Tuple[float, fl
     sentence = " ".join(sentences)
     return sentence
 
+def get_annots_from_page(page):
+    annots = []
+    annot = page.first_annot
+
+    while annot:
+        annots.append(annot)
+        annot = annot.next
+
+    return annots
+
 def parse_highlight_from_page(page):
     wordlist = page.get_text("words")  # list of words on page
     wordlist.sort(key=lambda w: (w[3], w[0]))  # ascending y, then x
     highlights: List[Highlight] = []
 
-    annot = page.first_annot
-    while annot:
+    annots = get_annots_from_page(page)
+    annots.sort(key=lambda w: (w.vertices[0][0], w.vertices[0][1]))
+
+    for annot in annots:
         if annot.type[1] == 'Highlight':
             annot_text = parse_text_from_annotation(annot, wordlist)
             rgb_percentages = annot.colors['stroke']
-            #print(annot_text, annot.colors, sep='\n')
             highlight = Highlight(rgb_percentages, annot_text)
             highlights.append(highlight)
-        print(annot.type)
-        annot = annot.next
     return highlights
 
 def parse_highlight_from_pdf(filepath: str) -> List:
