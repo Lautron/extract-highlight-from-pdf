@@ -1,7 +1,7 @@
 # Based on https://stackoverflow.com/a/63686095
 
 from typing import List, Tuple
-from printer import HighlightFormatter, Highlight, Word
+from highlight import HighlightFormatter, Highlight, Word
 
 import fitz  # install with 'pip install pymupdf'
 

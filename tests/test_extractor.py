@@ -1,8 +1,8 @@
 from extractor import main
 
 def test_main():
-    filename = "test_pdf.pdf"
-    md_file = "test_pdf.md"
+    filename = "tests/test_pdf.pdf"
+    md_file = "tests/test_pdf.md"
     with open(md_file, 'r') as md:
         md_lines = md.readlines()
         extracted_lines = main(filename).split('\n')

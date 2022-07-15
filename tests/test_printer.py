@@ -1,5 +1,5 @@
 
-from printer import *
+from highlight import *
 
 class FakeHighlight(Highlight):
     def __init__(self):
