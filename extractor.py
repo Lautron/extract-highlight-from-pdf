@@ -1,27 +1,26 @@
 # Based on https://stackoverflow.com/a/63686095
 
 from typing import List, Tuple
-from printer import HighlightFormatter, Highlight
+from printer import HighlightFormatter, Highlight, Word
 
 import fitz  # install with 'pip install pymupdf'
 
-def parse_text_from_annotation(annot: fitz.Annot, wordlist: List[Tuple[float, float, float, float, str, int, int, int]]) -> str:
-    points = annot.vertices
-    quad_count = int(len(points) / 4)
-    MIN_INTERSECTION_HEIGHT = 1.5
-    words = []
+def parse_text_from_annotation(highlight: Highlight, page_words: List[Word]) -> str:
+    highlight_lines = highlight.get_highlight_lines()
     sentences = []
-    valid_intersection_height = lambda r1, r2: (abs(r1.y1 - r2.y0) > MIN_INTERSECTION_HEIGHT)
-    is_word_highlighted = lambda r1, r2: r1.intersects(r2) and valid_intersection_height(r1, r2)
-    for i in range(quad_count):
-        # where the highlighted part is
-        r = fitz.Quad(points[i * 4 : i * 4 + 4]).rect
 
-        words = [w for w in wordlist if is_word_highlighted(r, fitz.Rect(w[:4]))]
+    for line in highlight_lines:
+        line_words = []
+        for word in page_words:
+            if word in line:
+                line_words.append(str(word))
 
-        sentences.append(" ".join(w[4] for w in words))
-    sentence = " ".join(sentences)
-    return sentence
+        sentence = " ".join(line_words)
+        sentences.append(sentence)
+
+    text = " ".join(sentences)
+
+    return text
 
 def get_annots_from_page(page):
     annots = []
@@ -36,6 +35,7 @@ def get_annots_from_page(page):
 def parse_highlight_from_page(page):
     wordlist = page.get_text("words")  # list of words on page
     wordlist.sort(key=lambda w: (w[3], w[0]))  # ascending y, then x
+    words = [Word(word) for word in wordlist]
     highlights: List[Highlight] = []
 
     annots = get_annots_from_page(page)
