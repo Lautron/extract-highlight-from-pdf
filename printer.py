@@ -1,4 +1,6 @@
 from config import Config
+from typing import Tuple
+import fitz  # install with 'pip install pymupdf'
 
 class HexStringFromPercentage:
     def __init__(self, percentage: float):
@@ -21,6 +23,30 @@ class HexStringFromPercentage:
 
     def __str__(self):
         return self.hex_code
+
+class Word:
+    def __init__(self, word:Tuple[float, float, float, float, str, int, int, int]):
+        self.rect = fitz.Rect(word[:4])
+        self.text = word[4]
+
+    def __str__(self):
+        return self.text
+
+class HighlightLine:
+    MIN_INTERSECTION_HEIGHT = 1.5
+
+    def __init__(self, vertices):
+        self.vertices = vertices
+        self.rect = fitz.Quad(vertices).rect # TODO check
+
+    def __contains__(self, item):
+        return self.is_word_in_line(item.rect)
+
+    def is_word_in_line(self, rect): 
+        return self.rect.intersects(rect) and self.is_valid_intersection_height(rect)
+
+    def is_valid_intersection_height(self, rect): 
+        return abs(self.rect.y1 - rect.y0) > self.MIN_INTERSECTION_HEIGHT
 
 class Highlight:
     def __init__(self, color: tuple[float, float, float], text: str):
