@@ -43,9 +43,9 @@ def parse_highlight_from_page(page):
 
     for annot in annots:
         if annot.type[1] == 'Highlight':
-            annot_text = parse_text_from_annotation(annot, wordlist)
-            rgb_percentages = annot.colors['stroke']
-            highlight = Highlight(rgb_percentages, annot_text)
+            highlight = Highlight(annot)
+            annot_text = parse_text_from_annotation(highlight, words)
+            highlight.set_text(annot_text)
             highlights.append(highlight)
     return highlights
 

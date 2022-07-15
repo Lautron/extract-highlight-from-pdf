@@ -49,12 +49,26 @@ class HighlightLine:
         return abs(self.rect.y1 - rect.y0) > self.MIN_INTERSECTION_HEIGHT
 
 class Highlight:
-    def __init__(self, color: tuple[float, float, float], text: str):
-        self.text: str = text
-        self._set_hex_color_from_rgb(color)
+    def __init__(self, annot):
+        self.text = None
+        self.type = annot.type[1]
+        self.rgb_percentages = annot.colors['stroke']
+        self.vertices = annot.vertices
+        self.line_ammount = int(len(annot.vertices) / 4)
 
-    def _set_hex_color_from_rgb(self, color: tuple[float, float, float]) -> None:
-        rgb_hex_values: list = [str(HexStringFromPercentage(percentage)) for percentage in color]
+        self._set_hex_color_from_rgb()
+
+    def set_text(self, text):
+        self.text = text
+
+    def get_highlight_lines(self):
+        return [HighlightLine(self.get_nth_sub_rect(i)) for i in range(self.line_ammount)]
+
+    def get_nth_sub_rect(self, n):
+        return self.vertices[n * 4 : n * 4 + 4]
+
+    def _set_hex_color_from_rgb(self) -> None:
+        rgb_hex_values: list = [str(HexStringFromPercentage(percentage)) for percentage in self.rgb_percentages]
         self.color: str = '#' + "".join(rgb_hex_values)
 
     def __repr__(self):
@@ -65,7 +79,7 @@ class HighlightFormatter:
 
     def __init__(self, highlight: Highlight):
         self.color: str = highlight.color
-        self.text: str = highlight.text
+        self.text = highlight.text
 
     def format(self) -> str:
         template = self.template_by_color.get(self.color, '{}')
