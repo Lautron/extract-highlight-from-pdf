@@ -1,6 +1,10 @@
 
 from printer import *
 
+class FakeHighlight(Highlight):
+    def __init__(self):
+        pass
+        
 def test_hexString():
     assert str(HexStringFromPercentage(1.0)) == 'ff'
     assert str(HexStringFromPercentage(0.0)) == '00'
@@ -8,7 +12,9 @@ def test_hexString():
     assert str(HexStringFromPercentage(0.6666666865348816)) == 'aa'
 
 def _highlight(color, expected_hex):
-    highlight = Highlight(color, 'test')
+    highlight = FakeHighlight()
+    highlight.rgb_percentages = color
+    highlight._set_hex_color_from_rgb()
     assert highlight.color == expected_hex
 
 def test_Highlight():
@@ -23,8 +29,13 @@ def test_Highlight():
         _highlight(color, expected_hex)
 
 def _printer(color, text, expected_result):
-    highlight = Highlight(color, text)
+    highlight = FakeHighlight()
+    highlight.rgb_percentages = color
+    highlight._set_hex_color_from_rgb()
+    highlight.text = text
+
     printer = HighlightFormatter(highlight)
+
     assert printer.format() == expected_result
 
 def test_Printer():
